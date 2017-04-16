@@ -6,6 +6,13 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/ubuntu/16.04/mssql-server.list | tee /etc/apt/sources.list.d/mssql-server.list
 RUN apt-get update
 RUN apt-get install -y mssql-server mssql-server-fts
+RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
+RUN apt-get update
+RUN ACCEPT_EULA=y DEBIAN_FRONTEND=noninteractive \
+apt-get install -y --no-install-recommends mssql-tools unixodbc-dev
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
 # Default SQL Server TCP/Port.
 EXPOSE 1433
-CMD /sqlservr.sh
+RUN locale-gen en_US.utf8 && update-locale
+ADD entrypoint.sh /
+CMD /entrypoint.sh
