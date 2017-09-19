@@ -9,7 +9,7 @@ i=0
 while [[ $STATUS -eq 0 ]] || [[ $i -lt 30 ]]; do
 	sleep 1
 	i=$i+1
-	STATUS=$(grep 'Server setup is completed' /var/opt/mssql/log/setup*.log | wc -l)
+	STATUS=$(grep 'SQL Server is now ready for client connections' /var/opt/mssql/log/serverstart.log | wc -l)
 done
 echo =============== CREATING INIT DATA                ==========================
 
@@ -25,7 +25,7 @@ cd /opt/mssql-tools/bin/
 echo =============== INIT DATA CREATED 				   ==========================
 echo MSSQL SERVER SUCCESSFULLY STARTED
 
-#trap 
+#trap
 while [ "$END" == '' ]; do
 			sleep 1
 			trap "/opt/mssql/bin/sqlservr stop && END=1" INT TERM
